@@ -16,7 +16,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "terraform_state_bucket" {
-  bucket = "your-terraform-state-bucket"
+  bucket = "terraform-state-bucket"
   acl    = "private"
 
   versioning {
@@ -25,7 +25,7 @@ resource "aws_s3_bucket" "terraform_state_bucket" {
 }
 
 resource "aws_dynamodb_table" "terraform_lock_table" {
-  name           = "your-terraform-lock-table"
+  name           = "terraform-lock-table"
   billing_mode   = "PROVISIONED"
   hash_key       = "LockID"
   attribute {
