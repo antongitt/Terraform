@@ -27,8 +27,8 @@ resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
 }
 
 resource "aws_dynamodb_table" "terraform_lock_table" {
-  name         = "terraform-lock-table"
-  billing_mode = "PROVISIONED"
+  name           = "terraform-lock-table"
+  billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5
   hash_key       = "LockID"
