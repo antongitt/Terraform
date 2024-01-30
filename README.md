@@ -6,14 +6,17 @@ This configuration uses provisioned throughput for DynamoDB with low values that
 Before applying this configuration, make sure that you have the AWS CLI configured with the necessary credentials.
 
 To apply the configuration, run the following commands:
-```
+```bash
+git clone https://github.com/antongitt/Terraform.git
+cd Terraform/aws/backend/
 terraform init
+terraform plan
 terraform apply
 ```
 During the terraform apply process, Terraform will prompt you to confirm the changes. Type yes and press Enter to proceed.
 
 Once applied, you can retrieve the Terraform backend S3 information using:
-```
+```bash
 terraform output terraform_backend_s3
 ```
 This will display the S3 bucket information, including the bucket name, key, region, and DynamoDB table name.
