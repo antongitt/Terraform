@@ -10,28 +10,32 @@ provider "aws" {
   region = var.aws_region
 }
 
-resource "aws_s3_bucket" "terraform_state_bucket" {
+resource "aws_s3_bucket" "terraform_state" {
   bucket = var.s3_bucket_name
+}
+
+resource "aws_s3_bucket_acl" "terraform_state_acl" {
+  bucket = aws_s3_bucket.terraform_state.id
   acl    = "private"
 }
 
-resource "aws_s3_bucket_versioning" "terraform_state_bucket_versioning" {
-  bucket = aws_s3_bucket.terraform_state_bucket.bucket
-  enabled = true
+resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
+  bucket = aws_s3_bucket.terraform_state.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 resource "aws_dynamodb_table" "terraform_lock_table" {
   name         = "terraform-lock-table"
   billing_mode = "PROVISIONED"
+  read_capacity  = 5
+  write_capacity = 5
+  hash_key       = "LockID"
 
   attribute {
     name = "LockID"
     type = "S"
-  }
-
-  provisioned_throughput {
-    read_capacity  = 5
-    write_capacity = 5
   }
 }
 
@@ -60,7 +64,7 @@ resource "aws_iam_role_policy_attachment" "terraform_backend_attachment" {
 }
 
 resource "aws_s3_bucket_policy" "terraform_backend_policy" {
-  bucket = aws_s3_bucket.terraform_state_bucket.bucket
+  bucket = aws_s3_bucket.terraform_state.bucket
 
   policy = <<EOF
 {
@@ -72,7 +76,7 @@ resource "aws_s3_bucket_policy" "terraform_backend_policy" {
         "Service": "dynamodb.amazonaws.com"
       },
       "Action": "s3:GetBucketVersioning",
-      "Resource": "${aws_s3_bucket.terraform_state_bucket.arn}"
+      "Resource": "${aws_s3_bucket.terraform_state.arn}"
     },
     {
       "Effect": "Allow",
@@ -80,7 +84,7 @@ resource "aws_s3_bucket_policy" "terraform_backend_policy" {
         "Service": "s3.amazonaws.com"
       },
       "Action": "s3:PutObject",
-      "Resource": "${aws_s3_bucket.terraform_state_bucket.arn}/*",
+      "Resource": "${aws_s3_bucket.terraform_state.arn}/*",
       "Condition": {
         "StringEquals": {
           "aws:PrincipalARN": "${aws_iam_role.terraform_backend_role.arn}"
@@ -94,11 +98,9 @@ EOF
 
 output "terraform_backend_s3" {
   value = {
-    bucket         = aws_s3_bucket.terraform_state_bucket.bucket
+    bucket         = aws_s3_bucket.terraform_state.bucket
     key            = var.s3_key
     region         = var.aws_region
     dynamodb_table = aws_dynamodb_table.terraform_lock_table.name
   }
 }
-
-
