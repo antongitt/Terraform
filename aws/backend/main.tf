@@ -6,17 +6,12 @@ terraform {
   }
 }
 
-# Configure the AWS Provider
 provider "aws" {
-  region = "us-east-1"
-}
-
-provider "aws" {
-  region = "us-east-1"  # Choose the appropriate region
+  region = var.aws_region
 }
 
 resource "aws_s3_bucket" "terraform_state_bucket" {
-  bucket = "terraform-state-bucket"
+  bucket = var.s3_bucket_name
   acl    = "private"
 
   versioning {
@@ -99,8 +94,9 @@ EOF
 output "terraform_backend_s3" {
   value = {
     bucket = aws_s3_bucket.terraform_state_bucket.bucket
-    key    = "terraform.tfstate"
-    region = "us-east-1"
+    key    = var.s3_key
+    region = var.aws_region
     dynamodb_table = aws_dynamodb_table.terraform_lock_table.name
   }
 }
+
