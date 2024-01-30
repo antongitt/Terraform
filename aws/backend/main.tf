@@ -95,7 +95,7 @@ EOF
 
 output "terraform_backend_s3" {
   value = {
-    bucket         = aws_s3_bucket.terraform_state.name
+    bucket         = aws_s3_bucket.terraform_state.id
     key            = "${var.s3_key}"
     region         = "${var.aws_region}"
     dynamodb_table = aws_dynamodb_table.terraform_lock_table.name
