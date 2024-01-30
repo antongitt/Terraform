@@ -96,3 +96,11 @@ resource "aws_s3_bucket_policy" "terraform_backend_policy" {
 EOF
 }
 
+output "terraform_backend_s3" {
+  value = {
+    bucket = aws_s3_bucket.terraform_state_bucket.bucket
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+    dynamodb_table = aws_dynamodb_table.terraform_lock_table.name
+  }
+}
