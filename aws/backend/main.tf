@@ -13,16 +13,17 @@ provider "aws" {
 resource "aws_s3_bucket" "terraform_state_bucket" {
   bucket = var.s3_bucket_name
   acl    = "private"
+}
 
-  versioning {
-    enabled = true
-  }
+resource "aws_s3_bucket_versioning" "terraform_state_bucket_versioning" {
+  bucket = aws_s3_bucket.terraform_state_bucket.bucket
+  enabled = true
 }
 
 resource "aws_dynamodb_table" "terraform_lock_table" {
-  name           = "terraform-lock-table"
-  billing_mode   = "PROVISIONED"
-  hash_key       = "LockID"
+  name         = "terraform-lock-table"
+  billing_mode = "PROVISIONED"
+
   attribute {
     name = "LockID"
     type = "S"
@@ -93,10 +94,11 @@ EOF
 
 output "terraform_backend_s3" {
   value = {
-    bucket = aws_s3_bucket.terraform_state_bucket.bucket
-    key    = var.s3_key
-    region = var.aws_region
+    bucket         = aws_s3_bucket.terraform_state_bucket.bucket
+    key            = var.s3_key
+    region         = var.aws_region
     dynamodb_table = aws_dynamodb_table.terraform_lock_table.name
   }
 }
+
 
