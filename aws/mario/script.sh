@@ -6,8 +6,7 @@ echo "Creating a S3 backend with Terraform"
 cd ../backend
 echo "$PWD"
 terraform init
-terraform plan
-terraform apply 
+terraform apply -auto-approve
 
 echo "Creating EKS with Terraform"
 cd ../mario

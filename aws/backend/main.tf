@@ -99,7 +99,7 @@ resource "local_file" "backend_tf" {
 terraform {
   backend "s3" {
     bucket         = ${aws_s3_bucket.terraform_state.id}
-    key            = "projects/${project_name}/.tfstate"
+    key            = "projects/${var.project_name}/.tfstate"
     region         = ${var.aws_region}
     dynamodb_table = ${aws_dynamodb_table.terraform_lock_table.name}
   }
