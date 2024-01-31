@@ -12,5 +12,4 @@ echo "Creating EKS with Terraform"
 cd ../mario
 echo "$PWD"
 terraform init
-terraform plan
-#terraform apply
+terraform apply -auto-approve
