@@ -1,3 +1,15 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+    }
+  }
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"
