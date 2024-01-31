@@ -95,6 +95,7 @@ EOF
 
 resource "local_file" "backend_tf" {
   filename = "../${var.project_name}/backend.tf"
+  file_permission = "0644"
   content  = <<EOT
 terraform {
   backend "s3" {
