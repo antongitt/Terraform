@@ -1,3 +1,11 @@
+# aws/mario
+To apply the configuration, run the following commands:
+```bash
+git clone https://github.com/antongitt/Terraform.git
+cd Terraform/aws/mario
+sudo chmod +x script.sh
+```
+
 # aws/backend
 Terraform configuration sets up an S3 bucket, a DynamoDB table, and the required IAM roles and policies for a Terraform backend on AWS. Additionally, it defines an output to display the S3 bucket information in a format for S3 backend configuration https://developer.hashicorp.com/terraform/language/settings/backends/s3
 

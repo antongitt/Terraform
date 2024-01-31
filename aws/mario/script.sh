@@ -1,26 +1,17 @@
 # Set variables
-aws_region="us-east-1"
-s3_key="projects/mario/.tfstate"
+echo 'project_name = "mario"' > ../backend/terraform.tfvars
+echo 'aws_region   = "us-east-1"' >> ../backend/terraform.tfvars
 
-# Create a S3 backend with Terraform
+echo "Creating a S3 backend with Terraform"
 cd ../backend
+echo "$PWD"
 terraform init
-terraform plan -var="aws_region=$aws_region" -var="aws_region=$s3_key"
-terraform apply -var="aws_region=$aws_region" -var="aws_region=$s3_key"
-terraform output -json > output.json
+terraform plan
+terraform apply 
 
-# Create a new file named backend.tf
+echo "Creating EKS with Terraform"
 cd ../mario
-echo 'terraform {' > backend.tf
-echo '  backend "s3" {' >> backend.tf
-
-# Read values from json file and append to backend.tf
-jq -r '. | to_entries[] | "    \(.key) = \"\(.value)\""' output.json >> backend.tf
-
-# Close the backend.tf file
-echo '  }' >> backend.tf
-echo '}' >> backend.tf
-
-# Create EKS with Terraform
+echo "$PWD"
 terraform init
-terraform plan -var="aws_region=$aws_region"
+terraform plan
+#terraform apply

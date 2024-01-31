@@ -93,11 +93,16 @@ resource "aws_s3_bucket_policy" "terraform_backend_policy" {
 EOF
 }
 
-output "terraform_backend_s3" {
-  value = {
-    bucket         = aws_s3_bucket.terraform_state.id
-    key            = var.s3_key
-    region         = var.aws_region
-    dynamodb_table = aws_dynamodb_table.terraform_lock_table.name
+resource "local_file" "backend_tf" {
+  filename = "../${var.project_name}/backend.tf"
+  content  = <<EOT
+terraform {
+  backend "s3" {
+    bucket         = ${aws_s3_bucket.terraform_state.id}
+    key            = "projects/${project_name}/.tfstate"
+    region         = ${var.aws_region}
+    dynamodb_table = ${aws_dynamodb_table.terraform_lock_table.name}
   }
+}
+EOT
 }
