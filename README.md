@@ -1,7 +1,7 @@
 # aws/mario
-In this project, you will deploy an EKS cluster using Terraform. Then, you will configure kubectl using Terraform output and verify that your cluster is ready to use.
+In this fun project/example, you will deploy an EKS cluster running Super Mario Game using Terraform. Then, you will configure kubectl using Terraform output and verify that your cluster is ready to use.
 > [!WARNING]
->AWS EKS clusters cost $0.10 per hour, so you may incur charges by running this tutorial. The cost should be a few dollars at most, but be sure to delete your infrastructure promptly to avoid additional charges. We are not responsible for any charges you may incur.
+>AWS EKS clusters cost $0.10 per hour, so you may incur charges by running this tutorial. The cost should be a few dollars at most, but be sure to delete your infrastructure promptly to avoid additional charges.
 
 To apply the configuration, run the following commands:
 ```bash
