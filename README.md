@@ -10,6 +10,7 @@ To apply the configuration, run the following commands:
 git clone https://github.com/antongitt/Terraform.git
 cd Terraform/aws/mario
 sudo chmod +x script.sh
+./script.sh
 ```
 
 # aws/backend
