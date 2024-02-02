@@ -32,15 +32,11 @@ Replace the placeholders with your actual values:
 - ```<subnet-id>```: Replace with the ID of the subnet where you want to launch the instance.
 - ```<security-group-id-1> <security-group-id-2>```: Replace with the IDs of the security groups for the instance.
 
-Example:
+Bonus:
 ```bash
-aws configure set region <your-region>
-aws ec2 run-instances \
-    --image-id <ami-id> \
-    --instance-type <instance-type> \
-    --key-name  anton-iam-key-pair \
-    --subnet-id <subnet-id> \
-    --security-group-ids <security-group-id-1> <security-group-id-2>
+git fetch
+git reset --hard
+git pull
 ```
 
 ### Script

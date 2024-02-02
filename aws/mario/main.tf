@@ -49,13 +49,10 @@ data "aws_vpc" "default" {
 }
 
 # Only use subnets from available zones
-data "aws_subnet_ids" "available" {
-  vpc_id = data.aws_vpc.default.id
+data "aws_subnet" "available" {
   count  = length(data.aws_availability_zones.available.names)
-  filter {
-    name   = "availabilityZone"
-    values = [data.aws_availability_zones.available.names[count.index]]
-  }
+  vpc_id = data.aws_vpc.default.id
+  availability_zone = data.aws_availability_zones.available.names[count.index]
 }
 
 # Create a cluster using only available subnets
@@ -64,7 +61,7 @@ resource "aws_eks_cluster" "cluster" {
   role_arn = aws_iam_role.cluster.arn
 
   vpc_config {
-    subnet_ids = data.aws_subnet_ids.available[*].id
+    subnet_ids = [data.aws_subnet.available[*].id]
   }
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
@@ -115,7 +112,7 @@ resource "aws_eks_node_group" "group" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = "mario-group"
   node_role_arn   = aws_iam_role.node.arn
-  subnet_ids      = data.aws_subnets.public.ids
+  subnet_ids      = [data.aws_subnet.available[*].id]
 
   scaling_config {
     desired_size = 1
