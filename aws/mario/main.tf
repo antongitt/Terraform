@@ -18,8 +18,7 @@ data "aws_availability_zones" "available" {
   }
 }
 
-
-# Creating the Amazon EKS cluster role https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role
+# Creating the Amazon EKS cluster role
 resource "aws_iam_role" "cluster" {
   name               = "eksClusterRole"
 
@@ -55,13 +54,18 @@ data "aws_subnet" "available" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 }
 
+# Flatten the list of subnet IDs
+locals {
+  flattened_subnets = flatten([for subnet in data.aws_subnet.available : subnet.id])
+}
+
 # Create a cluster using only available subnets
 resource "aws_eks_cluster" "cluster" {
   name     = "mario-cluster"
   role_arn = aws_iam_role.cluster.arn
 
   vpc_config {
-    subnet_ids = [data.aws_subnet.available[*].id]
+    subnet_ids = local.flattened_subnets
   }
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
@@ -69,7 +73,7 @@ resource "aws_eks_cluster" "cluster" {
   depends_on = [aws_iam_role_policy_attachment.cluster]
 }
 
-# Create the node IAM role https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html
+# Create the node IAM role
 resource "aws_iam_role" "node" {
   name               = "eksNodeRole"
 
@@ -106,13 +110,12 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
   role       = aws_iam_role.node.name
 }
 
-
 # create node group
 resource "aws_eks_node_group" "group" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = "mario-group"
   node_role_arn   = aws_iam_role.node.arn
-  subnet_ids      = [data.aws_subnet.available[*].id]
+  subnet_ids      = local.flattened_subnets
 
   scaling_config {
     desired_size = 1
