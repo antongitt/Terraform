@@ -38,7 +38,7 @@ aws configure set region <your-region>
 aws ec2 run-instances \
     --image-id <ami-id> \
     --instance-type <instance-type> \
-    --key-name <key-pair-name> \
+    --key-name  anton-iam-key-pair \
     --subnet-id <subnet-id> \
     --security-group-ids <security-group-id-1> <security-group-id-2>
 ```
