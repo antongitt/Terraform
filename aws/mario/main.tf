@@ -10,6 +10,15 @@ provider "aws" {
   region = var.aws_region
 }
 
+# Filter out local zones, which are not currently supported with managed node groups
+data "aws_availability_zones" "available" {
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+}
+
+
 # Creating the Amazon EKS cluster role https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role
 resource "aws_iam_role" "cluster" {
   name               = "eksClusterRole"
@@ -39,25 +48,28 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_subnets" "public" {
+# Only use subnets from available zones
+data "aws_subnet_ids" "available" {
+  vpc_id = data.aws_vpc.default.id
+  count  = length(data.aws_availability_zones.available.names)
   filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
+    name   = "availabilityZone"
+    values = [data.aws_availability_zones.available.names[count.index]]
   }
 }
 
-# Create a cluster
+# Create a cluster using only available subnets
 resource "aws_eks_cluster" "cluster" {
   name     = "mario-cluster"
   role_arn = aws_iam_role.cluster.arn
 
   vpc_config {
-    subnet_ids = data.aws_subnets.public.ids
+    subnet_ids = data.aws_subnet_ids.available[*].id
   }
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
   # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
-  depends_on = [ aws_iam_role_policy_attachment.cluster]
+  depends_on = [aws_iam_role_policy_attachment.cluster]
 }
 
 # Create the node IAM role https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html
@@ -122,7 +134,7 @@ resource "aws_eks_node_group" "group" {
   ]
 }
 
-# Output the EKS cluster name and Kubernetes version as environment variables
+# Output as environment variables
 output "eks_cluster_env_variables" {
   value = {
     EKS_CLUSTER_NAME         = aws_eks_cluster.cluster.name
