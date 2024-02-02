@@ -28,7 +28,7 @@ terraform apply -auto-approve
 # Add Kubernetes repository
 sudo yum-config-manager --add-repo https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
 # Install kubectl with the specified version
-sudo yum install -y kubectl-${kube_version}
+sudo yum install -y kubectl
 # Verify the installation
 kubectl version --client
 
