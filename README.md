@@ -18,8 +18,11 @@ sudo chmod +x script.sh
 
 That's it. Cluster creation could take up to 10 minutes.
 
-
-
+Let's remove the service and deployment first
+```bash
+kubectl delete service mario-service
+kubectl delete deployment mario-deployment
+```
 
 # aws/backend
 Terraform configuration sets up an S3 bucket, a DynamoDB table, and the required IAM roles and policies for a Terraform backend on AWS. Additionally, it creates the backend file in a format for S3 backend configuration https://developer.hashicorp.com/terraform/language/settings/backends/s3

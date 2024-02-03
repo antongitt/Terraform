@@ -41,4 +41,6 @@ kubectl get all
 kubectl describe service mario-service
 kubectl describe service mario-service | grep "LoadBalancer Ingress"
 
+# kubectl get events --sort-by=.metadata.creationTimestamp
+
 # terraform destroy --auto-approve
