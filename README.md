@@ -18,10 +18,19 @@ sudo chmod +x script.sh
 
 That's it. Cluster creation could take up to 10 minutes.
 
+Check cluster events:
+```bash
+kubectl get events --sort-by=.metadata.creationTimestamp
+```
+
 Let's remove the service and deployment first
 ```bash
 kubectl delete service mario-service
 kubectl delete deployment mario-deployment
+```
+Terraform
+```bash
+terraform destroy --auto-approve
 ```
 
 # aws/backend
