@@ -48,6 +48,9 @@ sudo chmod +x script.sh
 ./script.sh
 ```
 
+Error: creating EKS Cluster (mario-cluster): operation error EKS: CreateCluster, https response error StatusCode: 400, RequestID: , UnsupportedAvailabilityZoneException: Cannot create cluster 'mario-cluster' because us-east-1e, the targeted availability zone, does not currently have sufficient capacity to support the cluster. Retry and choose from these availability zones: us-east-1a, us-east-1b, us-east-1c, us-east-1d, us-east-1f
+
+
 # aws/backend
 Terraform configuration sets up an S3 bucket, a DynamoDB table, and the required IAM roles and policies for a Terraform backend on AWS. Additionally, it creates the backend file in a format for S3 backend configuration https://developer.hashicorp.com/terraform/language/settings/backends/s3
 
@@ -61,7 +64,7 @@ git clone https://github.com/antongitt/Terraform.git
 cd Terraform/aws/backend/
 ```
 
-The configuration requres the ```terraform.tfvars``` file with ```project_name``` and ```aws_region``` variables, which can be set via CLI:
+The configuration requires the ```terraform.tfvars``` file with ```project_name``` and ```aws_region``` variables, which can be set via CLI:
 ```bash
 echo 'project_name = "mario"' > terraform.tfvars
 echo 'aws_region   = "us-east-1"' >> terraform.tfvars
