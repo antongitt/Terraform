@@ -108,7 +108,7 @@ resource "aws_eks_node_group" "group" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = "mario-group"
   node_role_arn   = aws_iam_role.node.arn
-  subnet_ids      = data.aws_subnets.public.ids
+  subnet_ids      = [for subnet in data.aws_subnet.set : subnet.id if subnet.availability_zone != "us-east-1e"] # https://stackoverflow.com/a/70948355
 
   scaling_config {
     desired_size = 1
