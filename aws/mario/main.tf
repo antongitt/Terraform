@@ -39,15 +39,15 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_subnets" "this" {
+data "aws_subnets" "available" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_vpc.this.id]
+    values = [data.aws_vpc.default.id]
   }
 }
 
 data "aws_subnet" "this" {
-  for_each = toset(data.aws_subnets.this.ids)
+  for_each = toset(data.aws_subnets.available.ids)
   id       = each.value
 }
 
@@ -57,7 +57,7 @@ resource "aws_eks_cluster" "cluster" {
   role_arn = aws_iam_role.cluster.arn
 
   vpc_config {
-    subnet_ids = [for subnet in data.aws_subnet.this : subnet.id if subnet.availability_zone != "us-east-1e"] # https://stackoverflow.com/a/70948355
+    subnet_ids = [for subnet in data.aws_subnet.available : subnet.id if subnet.availability_zone != "us-east-1e"] # https://stackoverflow.com/a/70948355
   }
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
