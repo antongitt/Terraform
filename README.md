@@ -5,42 +5,10 @@ In this fun project/example, you will deploy an EKS cluster running Super Mario 
 > [!WARNING]
 >AWS EKS clusters cost $0.10 per hour, so you may incur charges by running this tutorial. The cost should be a few dollars at most, but be sure to delete your infrastructure promptly to avoid additional charges.
 
-### Create the runner VM with AWS CloudShell:
+You can create a runner VM or simply use AWS CloudShell:
 - Open the AWS Management Console.
 - In the top-right corner, click on "AWS CloudShell."
-- Run the AWS CLI Commands:
-- Set your AWS region
-```bash
-aws configure set region <your-region>
-```
-- Run the following command to create an EC2 instance
-```bash
-aws ec2 run-instances \
-    --image-id <ami-id> \
-    --instance-type <instance-type> \
-    --key-name <key-pair-name> \
-    --subnet-id <subnet-id> \
-    --security-group-ids <security-group-id-1> <security-group-id-2>
-```
-
-Replace the placeholders with your actual values:
-
-- ```<your-region>```: Replace with your AWS region (e.g., us-east-1).
-- ```<ami-id>```: Replace with the Amazon Machine Image (AMI) ID for your chosen operating system.
-- ```<instance-type>```: Replace with the EC2 instance type (e.g., t2.micro).
-- ```<key-pair-name>```: Replace with the name of your key pair.
-- ```<subnet-id>```: Replace with the ID of the subnet where you want to launch the instance.
-- ```<security-group-id-1> <security-group-id-2>```: Replace with the IDs of the security groups for the instance.
-
-Bonus:
-```bash
-git fetch
-git reset --hard
-git pull
-```
-
-### Script
-To apply the configuration, run the following commands:
+- Run the following commands:
 ```bash
 git clone https://github.com/antongitt/Terraform.git
 cd Terraform/aws/mario
@@ -48,7 +16,9 @@ sudo chmod +x script.sh
 ./script.sh
 ```
 
-Error: creating EKS Cluster (mario-cluster): operation error EKS: CreateCluster, https response error StatusCode: 400, RequestID: , UnsupportedAvailabilityZoneException: Cannot create cluster 'mario-cluster' because us-east-1e, the targeted availability zone, does not currently have sufficient capacity to support the cluster. Retry and choose from these availability zones: us-east-1a, us-east-1b, us-east-1c, us-east-1d, us-east-1f
+That's it. Cluster creation could take up to 10 minutes.
+
+
 
 
 # aws/backend
