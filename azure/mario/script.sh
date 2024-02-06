@@ -1,35 +1,24 @@
 #!/bin/bash
 
-# Install Terraform
-sudo yum update -y
-sudo yum install -y yum-utils
-sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
-sudo yum -y install terraform
-# Verify the installation
+# Cloud Shell automatically updates to the latest version of Terraform. However, the updates come within a couple of weeks of release.
 terraform version
 
-# Copy the variables file
+echo "Copying the variables file..."
 cp -fr terraform.tfvars ../backend/terraform.tfvars
 
-echo "Creating a remote backend with Terraform"
+echo "Creating a remote backend with Terraform..."
 cd ../backend
 echo "$PWD"
 terraform init
 terraform apply -auto-approve
 
-echo "Creating Kubernetes Cluster with Terraform"
+echo "Creating Kubernetes Cluster with Terraform..."
 cd ../mario
 echo "$PWD"
 terraform init
 terraform apply -auto-approve
 
-# Install kubectl
-sudo yum-config-manager --add-repo https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-sudo yum install -y kubectl
-# Verify the installation
-kubectl version --client
-
-# Update the configuration to communicate with a particular cluster
+echo "Get access credentials for a managed Kubernetes cluster."
 az aks get-credentials --resource-group $(terraform output -raw rg_name) --name $(terraform output -raw cluster_name)
 
 # You can now use kubectl to manage your cluster and deploy Kubernetes configurations to it.

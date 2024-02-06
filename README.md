@@ -88,8 +88,8 @@ nano Terraform/azure/mario/terraform.tfvars
 ```
 - Run the script:
 ```
-cd Terraform/aws/mario
-sudo chmod +x script.sh
+cd Terraform/azure/mario
+chmod +x script.sh
 ./script.sh
 ```
 
