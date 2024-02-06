@@ -17,7 +17,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 resource "azurerm_storage_account" "sa" {
-  name                            = "terraformsa${substr(replace(lower(var.subid), "-", ""), strrid(replace(lower(var.subid), "-", ""), "-") + 1, 12)}" # https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview#storage-account-name
+  name                            = "terraformsa${substr(var.subid, strrid(var.subid, "-") + 1, 12)}" # https://learn.microsoft.com/en-us/azure/storage/common/storage-account-overview#storage-account-name
   resource_group_name             = azurerm_resource_group.rg.name
   location                        = azurerm_resource_group.rg.location
   account_tier                    = "Standard"
