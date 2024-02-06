@@ -1,19 +1,19 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
     }
   }
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = var.region
 }
 
 data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "tf-state-${data.aws_caller_identity.current.account_id}-${var.aws_region}"
+  bucket = "tf-state-${data.aws_caller_identity.current.account_id}-${var.region}"
 }
 
 resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
@@ -94,14 +94,14 @@ EOF
 }
 
 resource "local_file" "backend_tf" {
-  filename = "../${var.project_name}/backend.tf"
+  filename        = "../${var.project}/backend.tf"
   file_permission = "0644"
-  content  = <<EOT
+  content         = <<EOT
 terraform {
   backend "s3" {
     bucket         = "${aws_s3_bucket.terraform_state.id}"
-    key            = "projects/${var.project_name}/.tfstate"
-    region         = "${var.aws_region}"
+    key            = "projects/${var.project}/.tfstate"
+    region         = "${var.region}"
     dynamodb_table = "${aws_dynamodb_table.terraform_lock_table.name}"
   }
 }

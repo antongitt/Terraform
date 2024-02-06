@@ -1,18 +1,18 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
+      source = "hashicorp/aws"
     }
   }
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = var.region
 }
 
 # Creating the Amazon EKS cluster role https://docs.aws.amazon.com/eks/latest/userguide/service_IAM_role.html#create-service-role
 resource "aws_iam_role" "cluster" {
-  name               = "eksClusterRole"
+  name = "eksClusterRole"
 
   assume_role_policy = <<EOF
 {
@@ -62,12 +62,12 @@ resource "aws_eks_cluster" "cluster" {
 
   # Ensure that IAM Role permissions are created before and deleted after EKS Cluster handling.
   # Otherwise, EKS will not be able to properly delete EKS managed EC2 infrastructure such as Security Groups.
-  depends_on = [ aws_iam_role_policy_attachment.cluster]
+  depends_on = [aws_iam_role_policy_attachment.cluster]
 }
 
 # Create the node IAM role https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html
 resource "aws_iam_role" "node" {
-  name               = "eksNodeRole"
+  name = "eksNodeRole"
 
   assume_role_policy = <<EOF
 {

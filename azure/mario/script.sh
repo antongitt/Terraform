@@ -8,18 +8,16 @@ sudo yum -y install terraform
 # Verify the installation
 terraform version
 
+# Copy the variables file
+cp -fr terraform.tfvars ../backend/terraform.tfvars
 
-# Set variables
-echo 'project = "mario"' > ../backend/terraform.tfvars
-echo 'region   = "us-east-1"' >> ../backend/terraform.tfvars
+echo "Creating a remote backend with Terraform"
+cd ../backend
+echo "$PWD"
+terraform init
+terraform apply -auto-approve
 
-#echo "Creating a S3 backend with Terraform"
-#cd ../backend
-#echo "$PWD"
-#terraform init
-#terraform apply -auto-approve
-
-echo "Creating EKS with Terraform"
+echo "Creating Kubernetes Cluster with Terraform"
 cd ../mario
 echo "$PWD"
 terraform init
@@ -32,7 +30,7 @@ sudo yum install -y kubectl
 kubectl version --client
 
 # Update the configuration to communicate with a particular cluster
-aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name)
+az aks get-credentials --resource-group $(terraform output -raw rg_name) --name $(terraform output -raw cluster_name)
 
 # You can now use kubectl to manage your cluster and deploy Kubernetes configurations to it.
 kubectl apply -f deployment.yaml

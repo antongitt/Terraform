@@ -1,6 +1,6 @@
 output "region" {
-  description = "AWS region"
-  value       = var.aws_region
+  description = "region"
+  value       = var.region
 }
 
 output "cluster_name" {
