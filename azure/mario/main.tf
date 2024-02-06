@@ -27,9 +27,10 @@ resource "azurerm_kubernetes_cluster" "cl" {
   }
 
   default_node_pool {
-    name       = var.project
-    vm_size    = "Standard_B2s"
-    node_count = 2
+    name            = var.project
+    vm_size         = "Standard_B2s"
+    os_disk_size_gb = 32
+    node_count      = 1
   }
 
   network_profile {
