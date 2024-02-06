@@ -1,14 +1,14 @@
 # aws/mario
 ![mario](https://github.com/antongitt/Terraform/assets/91033128/d59dcc9c-1f2d-45fe-9d18-574e5818cd23)
 
-In this fun project/example, you will deploy an EKS cluster running a dockerized Super Mario game using Terraform and a couple of ```kubectl``` commands.
+In this fun project/example, you will deploy an EKS cluster running a [dockerized Super Mario game](https://github.com/kaminskypavel/supermario-docker) using Terraform and a couple of ```kubectl``` commands.
 
 > [!WARNING]
 >AWS EKS clusters cost $0.10 per hour, so you may incur charges by running this tutorial. The cost should be a few dollars at most, but be sure to delete your infrastructure promptly to avoid additional charges.
 
-You can create a runner VM or simply use AWS CloudShell:
+You can create a runner VM and attach IAM role to it, or you can simply use AWS CloudShell:
 - Open the AWS Management Console.
-- In the top-right corner, click on "AWS CloudShell."
+- In the top-right corner, click on "CloudShell"
 - Run the following commands:
 ```bash
 git clone https://github.com/antongitt/Terraform.git
@@ -17,18 +17,20 @@ sudo chmod +x script.sh
 ./script.sh
 ```
 
-That's it. Cluster creation could take up to 10 minutes.
+That's it! Cluster creation could take up to 10 minutes.
+Use url from last (```kubectl describe service```) script command.
 
-Check cluster events:
+Check the cluster events:
 ```bash
 kubectl get events --sort-by=.metadata.creationTimestamp
 ```
 
-Let's remove the service and deployment first
+When you are done playing, you could easily destroy the created infrastructure. Let's remove the service and deployment first:
 ```bash
 kubectl delete service mario-service
 kubectl delete deployment mario-deployment
 ```
+Then destroy cluster and all its resources:
 Terraform
 ```bash
 terraform destroy --auto-approve
