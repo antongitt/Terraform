@@ -39,4 +39,4 @@ kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 kubectl get all
 kubectl describe service mario-service
-kubectl describe service mario-service | grep "LoadBalancer Ingress"
+echo "Open this URL in your favorite browser: http://$(kubectl describe service mario-service | grep 'LoadBalancer Ingress' | awk '{print $3}')"
