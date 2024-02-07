@@ -4,7 +4,7 @@
 In this fun project/example, you will deploy an EKS cluster running a [dockerized Super Mario game](https://github.com/kaminskypavel/supermario-docker) using Terraform and a couple of ```kubectl``` commands.
 
 > [!WARNING]
->AWS EKS clusters cost $0.10 per hour, so you may incur charges by running this tutorial. The cost should be a few dollars at most, but be sure to delete your infrastructure promptly to avoid additional charges.
+> AWS EKS clusters cost $0.10 per hour, so you may incur charges by running this tutorial. The cost should be a few dollars at most, but be sure to delete your infrastructure promptly to avoid additional charges.
 
 You can create a runner VM and attach IAM role to it, or you can simply use AWS CloudShell:
 - Open the AWS Management Console.
@@ -84,7 +84,7 @@ When you apply this Terraform configuration, it will create or modify the ```../
 In this fun project/example, you will deploy an AKS cluster running a [dockerized Super Mario game](https://github.com/kaminskypavel/supermario-docker) using Terraform and a couple of ```kubectl``` commands.
 
 > [!NOTE]
->This project uses AKS Free tier which makes it easy to get started with a managed Kubernetes container orchestrator service in the most efficient and cost-effective way.
+> This project uses AKS Free tier which makes it easy to get started with a managed Kubernetes container orchestrator service in the most efficient and cost-effective way.
 
 You can create a runner VM and attach IAM role to it, or you can simply use Azure Cloud Shell:
 - Open the [Azure Portal](https://portal.azure.com/)
@@ -110,10 +110,10 @@ That's it! Cluster creation could take up to 10 minutes.
 Open URL from the script output.
 
 > [!TIP]
-In case of any issues, please check the cluster events. These events are retained for 1 hour by default:
-```bash
-kubectl get events --sort-by=.metadata.creationTimestamp
-```
+> In case of any issues, please check the cluster events. These events are retained for 1 hour by default:
+> ```bash
+> kubectl get events --sort-by=.metadata.creationTimestamp
+> ```
 
 When you are done playing, you could easily destroy the created infrastructure. Let's remove the service and deployment first:
 ```bash
@@ -144,7 +144,7 @@ echo 'region  = "eastus2"' >> terraform.tfvars
 echo 'subid   = "00000000-0000-0000-0000-000000000000"' >> terraform.tfvars
 ```
 > [!TIP]
-You can also list your subscriptions and view their IDs programmatically by using ```az account list``` command.
+> You can also list your subscriptions and view their IDs programmatically by using ```az account list``` command.
 
 To apply the configuration, run the following commands:
 ```terraform
