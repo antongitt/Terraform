@@ -37,6 +37,7 @@ sudo yum install -y kubectl
 # Verify the installation
 kubectl version --client
 
+echo
 echo "Updating configuration to communicate with the cluster..."
 aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name)
 
@@ -45,7 +46,8 @@ kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 kubectl get all
 kubectl describe service mario-service
-
-echo "Waiting for the external IP of the LoadBalancer to become available..."
-kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/mario-service --timeout=300s
-echo "Open this URL in your favorite browser: http://$(kubectl get service mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')"
+echo
+echo "Waiting for the external hostname of the LoadBalancer to become available..."
+kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].hostname}' service/mario-service --timeout=300s
+echo
+echo "Open this URL in your favorite browser: http://$(kubectl get service mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')"

@@ -34,7 +34,8 @@ kubectl apply -f deployment.yaml
 kubectl apply -f service.yaml
 kubectl get all
 kubectl describe service mario-service
-
+echo
 echo "Waiting for the external IP of the LoadBalancer to become available..."
-kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/mario-service --timeout=300s
-echo "Open this URL in your favorite browser: http://$(kubectl describe service mario-service | grep 'LoadBalancer Ingress' | awk '{print $3}')"
+kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' service/mario-service --timeout=300s
+echo
+echo "Open this URL in your favorite browser: http://$(kubectl get service mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')"
