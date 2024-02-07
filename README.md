@@ -37,10 +37,11 @@ That's it! Cluster creation could take up to 10 minutes.
 
 Open URL from the script output.
 
-In case of any issues, please check the cluster events. These events are retained for 1 hour by default:
-```bash
-kubectl get events --sort-by=.metadata.creationTimestamp
-```
+> [!TIP]
+> In case of any issues, please check the cluster events. These events are retained for 1 hour by default:
+> ```bash
+> kubectl get events --sort-by=.metadata.creationTimestamp
+> ```
 
 When you are done playing, you could easily destroy the created infrastructure. Let's remove the service and deployment first:
 ```bash
