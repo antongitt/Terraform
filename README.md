@@ -72,7 +72,7 @@ When you apply this Terraform configuration, it will create or modify the ```../
 In this fun project/example, you will deploy an AKS cluster running a [dockerized Super Mario game](https://github.com/kaminskypavel/supermario-docker) using Terraform and a couple of ```kubectl``` commands.
 
 > [!NOTE]
->This project use AKS Free tier which makes it easy to get started with a managed Kubernetes container orchestrator service in the most efficient and cost-effective way.
+>This project uses AKS Free tier which makes it easy to get started with a managed Kubernetes container orchestrator service in the most efficient and cost-effective way.
 
 You can create a runner VM and attach IAM role to it, or you can simply use Azure Cloud Shell:
 - Open the [Azure Portal](https://portal.azure.com/)
@@ -95,9 +95,9 @@ chmod +x script.sh
 
 That's it! Cluster creation could take up to 10 minutes.
 
-Open URL from script output.
+Open URL from the script output.
 
-Check the cluster events:
+In case of any issues, please check the cluster events. These events are retained for 1 hour by default:
 ```bash
 kubectl get events --sort-by=.metadata.creationTimestamp
 ```

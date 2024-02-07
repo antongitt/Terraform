@@ -18,13 +18,13 @@ if [[ $(terraform output -raw container) == "" ]]; then
     exit 1
 fi
 
-echo "Creating Kubernetes Cluster with Terraform..."
+echo "Creating Kubernetes cluster with Terraform..."
 cd ../mario
 echo "$PWD"
 terraform init
 terraform apply -auto-approve
 
-echo "Get access credentials for a managed Kubernetes cluster."
+echo "Getting access credentials for a managed Kubernetes cluster..."
 az aks get-credentials --resource-group $(terraform output -raw rg_name) --name $(terraform output -raw cluster_name) --overwrite-existing
 
 # You can now use kubectl to manage your cluster and deploy Kubernetes configurations to it.

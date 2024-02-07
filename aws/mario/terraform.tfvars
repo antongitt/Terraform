@@ -1,1 +1,2 @@
-region = "us-east-1"
+project = "mario"
+region  = "us-east-1"

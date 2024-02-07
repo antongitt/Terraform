@@ -16,4 +16,4 @@ spec:
       - name: mario-container
         image: kaminskypavel/mario:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8080
