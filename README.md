@@ -18,7 +18,7 @@ git clone https://github.com/antongitt/Terraform.git
 nano Terraform/aws/mario/terraform.tfvars
 ```
 - Run the script:
-```
+```bash
 cd Terraform/aws/mario
 chmod +x script.sh
 ./script.sh
@@ -73,7 +73,7 @@ echo 'region = "us-east-1"' >> terraform.tfvars
 ```
 
 To apply the configuration, run the following commands:
-```terraform
+```bash
 terraform init
 terraform apply -auto-approve
 ```
@@ -99,7 +99,7 @@ git clone https://github.com/antongitt/Terraform.git
 nano Terraform/azure/mario/terraform.tfvars
 ```
 - Run the script:
-```
+```bash
 cd Terraform/azure/mario
 chmod +x script.sh
 ./script.sh
@@ -143,10 +143,10 @@ echo 'region  = "eastus2"' >> terraform.tfvars
 echo 'subid   = "00000000-0000-0000-0000-000000000000"' >> terraform.tfvars
 ```
 > [!TIP]
-> You can also list your subscriptions and view their IDs programmatically by using ```az account list``` command.
+> You can also list your subscriptions and view their IDs programmatically by using ```az account list --query '[].{SubscriptionName:name, SubscriptionId:id}' --output table``` command.
 
 To apply the configuration, run the following commands:
-```terraform
+```bash
 terraform init
 terraform apply -auto-approve
 ```
