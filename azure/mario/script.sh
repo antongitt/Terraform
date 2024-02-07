@@ -3,6 +3,7 @@
 # Cloud Shell automatically updates to the latest version of Terraform. However, the updates come within a couple of weeks of release.
 terraform version
 
+echo
 echo "Copying the variables file..."
 cp -fr terraform.tfvars ../backend/terraform.tfvars
 
@@ -18,6 +19,7 @@ if [[ $(terraform output -raw container) == "" ]]; then
     exit 1
 fi
 
+echo
 echo "Creating Kubernetes cluster with Terraform..."
 cd ../mario
 echo "$PWD"
@@ -34,5 +36,5 @@ kubectl get all
 kubectl describe service mario-service
 
 echo "Waiting for the external IP of the LoadBalancer to become available..."
-kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/mario-service
+kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/mario-service --timeout=300s
 echo "Open this URL in your favorite browser: http://$(kubectl describe service mario-service | grep 'LoadBalancer Ingress' | awk '{print $3}')"
