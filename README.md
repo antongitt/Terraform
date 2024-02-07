@@ -13,7 +13,7 @@ You can create a runner VM and attach IAM role to it, or you can simply use AWS 
 ```bash
 git clone https://github.com/antongitt/Terraform.git
 ```
-- Set your variables in ```Terraform/aws/mario/terraform.tfvars``` file.
+- Set your variables in ```Terraform/aws/mario/terraform.tfvars``` file:
 ```bash
 nano Terraform/aws/mario/terraform.tfvars
 ```
@@ -49,7 +49,6 @@ kubectl delete service mario-service
 kubectl delete deployment mario-deployment
 ```
 Then destroy cluster and all its resources:
-Terraform
 ```bash
 terraform destroy --auto-approve
 ```
@@ -95,7 +94,7 @@ You can create a runner VM and attach IAM role to it, or you can simply use Azur
 ```bash
 git clone https://github.com/antongitt/Terraform.git
 ```
-- Set your variables in ```Terraform/azure/mario/terraform.tfvars``` file.
+- Set your variables in ```Terraform/azure/mario/terraform.tfvars``` file:
 ```bash
 nano Terraform/azure/mario/terraform.tfvars
 ```
@@ -122,7 +121,6 @@ kubectl delete service mario-service
 kubectl delete deployment mario-deployment
 ```
 Then destroy cluster and all its resources:
-Terraform
 ```bash
 terraform destroy --auto-approve
 ```
