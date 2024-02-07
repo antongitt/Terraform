@@ -14,10 +14,13 @@ You can create a runner VM and attach IAM role to it, or you can simply use AWS 
 git clone https://github.com/antongitt/Terraform.git
 ```
 - Set your variables in ```Terraform/aws/mario/terraform.tfvars``` file.
+```bash
+nano Terraform/aws/mario/terraform.tfvars
+```
 - Run the script:
 ```
 cd Terraform/aws/mario
-sudo chmod +x script.sh
+chmod +x script.sh
 ./script.sh
 ```
 
@@ -26,6 +29,15 @@ That's it! Cluster creation could take up to 10 minutes.
 Open URL from script output.
 
 Check the cluster events:
+```bash
+kubectl get events --sort-by=.metadata.creationTimestamp
+```
+
+That's it! Cluster creation could take up to 10 minutes.
+
+Open URL from the script output.
+
+In case of any issues, please check the cluster events. These events are retained for 1 hour by default:
 ```bash
 kubectl get events --sort-by=.metadata.creationTimestamp
 ```
