@@ -30,9 +30,11 @@ jobs:
       run: |
         cd aws/mario
         cp -fr terraform.tfvars ../backend/terraform.tfvars
+        echo "$PWD"
 
     - name: Create remote backend
       run: |
+        echo "$PWD"
         cd aws/mario/backend
         echo "$PWD"
         terraform init
