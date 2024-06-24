@@ -26,27 +26,17 @@ jobs:
         sudo apt-get update && sudo apt-get install -y terraform
         terraform version
 
-    - name: Change directory
-      run: |
-        echo "$PWD"
-        ls -h
-        cd aws/mario
-        echo "$PWD"
-        ls -h
-
     - name: Copy variables file
-      run: cp -fr terraform.tfvars ../backend/terraform.tfvars
+      run: |
+        cd aws/mario
+        cp -fr terraform.tfvars ../backend/terraform.tfvars
 
     - name: Create remote backend
       run: |
-        cd ../backend
+        cd aws/mario/backend
         echo "$PWD"
         terraform init
         terraform apply -auto-approve
-
-    - name: Check remote backend
-      run: |
-        cd ../backend
         if [[ $(terraform output -raw bucket) == "" ]]; then
           echo "Remote backend was not created! Exiting script..."
           exit 1
@@ -54,7 +44,7 @@ jobs:
 
     - name: Create Kubernetes cluster
       run: |
-        cd ../mario
+        cd aws/mario
         echo "$PWD"
         terraform init
         terraform apply -auto-approve
