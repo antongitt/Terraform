@@ -17,26 +17,21 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Install Terraform
+    - name: Install Terraform and other dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install -y gnupg software-properties-common curl
-        curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-        sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-        sudo apt-get update && sudo apt-get install -y terraform
+        curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+        apt-get install -y terraform
         terraform version
 
     - name: Copy variables file
       run: |
         cd aws/mario
         cp -fr terraform.tfvars ../backend/terraform.tfvars
-        echo "$PWD"
 
     - name: Create remote backend
       run: |
-        echo "$PWD"
-        cd aws/mario/backend
-        echo "$PWD"
+        cd aws/backend
         terraform init
         terraform apply -auto-approve
         if [[ $(terraform output -raw bucket) == "" ]]; then
@@ -53,12 +48,9 @@ jobs:
 
     - name: Install kubectl
       run: |
-        sudo apt-get update
-        sudo apt-get install -y apt-transport-https
-        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-        echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-        sudo apt-get update
-        sudo apt-get install -y kubectl
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+        apt-get install -y kubectl
         kubectl version --client
 
     - name: Update kubeconfig
@@ -72,5 +64,5 @@ jobs:
         kubectl get all
         kubectl describe service mario-service
         echo "Waiting for the external hostname of the LoadBalancer to become available..."
-        kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].hostname}' service/mario-service --timeout=300s
+        # kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].hostname}' service/mario-service --timeout=300s
         echo "Open this URL in your favorite browser: http://$(kubectl get service mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
