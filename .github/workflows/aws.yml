@@ -1,0 +1,79 @@
+name: 'AWS EKS workflow'
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  aws:
+    name: 'AWS EKS deployment job'
+    runs-on: ubuntu-latest
+    environment:
+      name: aws
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install Terraform
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gnupg software-properties-common curl
+        curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+        sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+        sudo apt-get update && sudo apt-get install -y terraform
+        terraform version
+
+    - name: Change directory
+      run: cd Terraform/aws/mario
+
+    - name: Copy variables file
+      run: cp -fr terraform.tfvars ../backend/terraform.tfvars
+
+    - name: Create remote backend
+      run: |
+        cd ../backend
+        echo "$PWD"
+        terraform init
+        terraform apply -auto-approve
+
+    - name: Check remote backend
+      run: |
+        cd ../backend
+        if [[ $(terraform output -raw bucket) == "" ]]; then
+          echo "Remote backend was not created! Exiting script..."
+          exit 1
+        fi
+
+    - name: Create Kubernetes cluster
+      run: |
+        cd ../mario
+        echo "$PWD"
+        terraform init
+        terraform apply -auto-approve
+
+    - name: Install kubectl
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y apt-transport-https
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+        echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+        sudo apt-get update
+        sudo apt-get install -y kubectl
+        kubectl version --client
+
+    - name: Update kubeconfig
+      run: |
+        aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name)
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f deployment.yaml
+        kubectl apply -f service.yaml
+        kubectl get all
+        kubectl describe service mario-service
+        echo "Waiting for the external hostname of the LoadBalancer to become available..."
+        kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].hostname}' service/mario-service --timeout=300s
+        echo "Open this URL in your favorite browser: http://$(kubectl get service mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
