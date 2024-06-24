@@ -27,7 +27,10 @@ jobs:
         terraform version
 
     - name: Change directory
-      run: cd Terraform/aws/mario
+      run: |
+        echo "$PWD"
+        cd /Terraform/aws/mario
+        echo "$PWD"
 
     - name: Copy variables file
       run: cp -fr terraform.tfvars ../backend/terraform.tfvars
