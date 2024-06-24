@@ -29,8 +29,10 @@ jobs:
     - name: Change directory
       run: |
         echo "$PWD"
-        cd /Terraform/aws/mario
+        ls -h
+        cd aws/mario
         echo "$PWD"
+        ls -h
 
     - name: Copy variables file
       run: cp -fr terraform.tfvars ../backend/terraform.tfvars
