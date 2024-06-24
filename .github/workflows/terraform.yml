@@ -46,6 +46,15 @@ name: 'Terraform'
 
 on:
   workflow_dispatch:
+    inputs:
+      DEPLOY_ENVIRONMENT:
+        description: "The deployment target. Set to 'aws' by default."
+        required: true
+        default: "aws"
+        type: choice
+        options:
+          - aws
+          - azure
 
 permissions:
   contents: read
