@@ -15,7 +15,7 @@ aws iam create-role --role-name GitHubActionsRole --assume-role-policy-document 
       "Condition": {
         "StringEquals": {
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
-          "token.actions.githubusercontent.com:sub": "repo:'"${GITHUB_REPO}"':*"
+          "token.actions.githubusercontent.com:sub": "repo:'"${GITHUB_REPO}"':environment:aws"
         }
       }
     }
