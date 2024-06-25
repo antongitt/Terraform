@@ -53,7 +53,7 @@ data "aws_subnet" "set" {
 
 # Create a cluster
 resource "aws_eks_cluster" "cluster" {
-  name     = "mario-cluster"
+  name     = "${var.project}-cluster"
   role_arn = aws_iam_role.cluster.arn
 
   vpc_config {
@@ -106,7 +106,7 @@ resource "aws_iam_role_policy_attachment" "AmazonEKS_CNI_Policy" {
 # create node group
 resource "aws_eks_node_group" "group" {
   cluster_name    = aws_eks_cluster.cluster.name
-  node_group_name = "mario-group"
+  node_group_name = "${var.project}-group"
   node_role_arn   = aws_iam_role.node.arn
   subnet_ids      = [for subnet in data.aws_subnet.set : subnet.id if subnet.availability_zone != "us-east-1e"] # https://stackoverflow.com/a/70948355
 

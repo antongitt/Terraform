@@ -20,8 +20,8 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
         aws-region:  ${{ vars.AWS_REGION }}
 
     - name: Install Terraform
@@ -58,6 +58,7 @@ jobs:
       run: |
         curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
         echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+        sudo apt-get update
         sudo apt-get install -y kubectl
         kubectl version --client
 
