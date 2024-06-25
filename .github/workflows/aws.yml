@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  id-token: write
   contents: read
 
 jobs:
@@ -21,7 +22,6 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE }}
-        role-session-name: GitHub_to_AWS_via_FederatedOIDC
         aws-region:  ${{ vars.AWS_REGION }}
 
     - name: Install Terraform
