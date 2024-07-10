@@ -7,14 +7,11 @@ permissions:
   id-token: write
   contents: read
 
-environment:
-  name: aws
-
 jobs:
-
   terraform-backend:
     name: 'Create the remote backend for Terraform job'
     runs-on: ubuntu-latest
+    environment: aws
 
     steps:
     - name: Checkout
@@ -60,7 +57,8 @@ jobs:
   terraform-cluster:
     name: 'Create the cluster resources with Terraform job'
     runs-on: ubuntu-latest
-
+    environment: aws
+   
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -96,7 +94,8 @@ jobs:
   kubectl:
     name: 'Configure the cluster with kubectl job'
     runs-on: ubuntu-latest
-
+    environment: aws
+    
     steps:
     - name: Install kubectl
       run: |
