@@ -27,9 +27,15 @@ aws iam create-role --role-name GitHubActionsRole --assume-role-policy-document 
   ]
 }'
 
+# Create a custom IAM policy specifically for actions to manage the lifecycle of Amazon EKS clusters, node groups, and associated resources since AWS does not offer a managed policy for these actions
+aws iam create-policy --policy-name EKSFullAccessPolicy --policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["eks:*"],"Resource":"*"}]}'
+
 # Attach policies to the role
 aws iam attach-role-policy --role-name GitHubActionsRole --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
-aws iam attach-role-policy --role-name GitHubActionsRole --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
 aws iam attach-role-policy --role-name GitHubActionsRole --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
 aws iam attach-role-policy --role-name GitHubActionsRole --policy-arn arn:aws:iam::aws:policy/IAMFullAccess
 aws iam attach-role-policy --role-name GitHubActionsRole --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+aws iam attach-role-policy --role-name GitHubActionsRole --policy-arn arn:aws:iam::aws:policy/AmazonEKSClusterPolicy
+aws iam attach-role-policy --role-name GitHubActionsRole --policy-arn arn:aws:iam::aws:policy/AmazonEKSServicePolicy
+aws iam attach-role-policy --role-name GitHubActionsRole --policy-arn $(aws iam list-policies --query "Policies[?PolicyName=='EKSFullAccessPolicy'].Arn" --output text)
+
