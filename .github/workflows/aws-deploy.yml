@@ -46,12 +46,18 @@ jobs:
           exit 1
         fi
     
-    - name: Upload backend.tf
-      uses: actions/upload-artifact@v4
+#    - name: Upload backend.tf as artifact
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: backend-artifact
+#        path: aws/mario/backend.tf
+#        overwrite: true
+
+    - name: Save backend.tf to cache
+      uses: actions/cache/save@v4
       with:
-        name: backend-artifact # NOTE: same artifact name
         path: aws/mario/backend.tf
-        overwrite: true
+        key: backend.tf-key
 
 
   terraform-cluster:
@@ -64,11 +70,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
     
-    - name: Download backend.tf
-      uses: actions/download-artifact@v4
+#    - name: Download backend.tf
+#      uses: actions/download-artifact@v4
+#      with:
+#        name: backend-artifact
+#        path: aws/mario
+
+    - name: Restore cached backend.tf
+      uses: actions/cache/restore@v4
       with:
-        name: backend-artifact
         path: aws/mario
+        key: backend.tf-key
+
+
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
