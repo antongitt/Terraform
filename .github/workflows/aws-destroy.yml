@@ -52,12 +52,11 @@ jobs:
       run: |
         cd aws/mario
         echo "$PWD"
-        BUCKET_NAME=$(sed -nE 's/^\s*bucket\s*=\s*"([^"]+)".*$/\1/p' backend.tf)-$(sed -nE 's/^\s*region\s*=\s*"([^"]+)".*$/\1/p' backend.tf)
-        DYNAMODB_TABLE=$(sed -nE 's/^\s*dynamodb_table\s*=\s*"([^"]+)".*$/\1/p' backend.tf)
-        echo "bucket_name=$BUCKET_NAME" >> $GITHUB_OUTPUT
-        echo "dynamodb_table=$DYNAMODB_TABLE" >> $GITHUB_OUTPUT
+        echo "bucket_name=$(sed -nE 's/^\s*bucket\s*=\s*"([^"]+)".*$/\1/p' backend.tf)" >> $GITHUB_OUTPUT
+        echo "dynamodb_table=$(sed -nE 's/^\s*dynamodb_table\s*=\s*"([^"]+)".*$/\1/p' backend.tf)" >> $GITHUB_OUTPUT
           
     - name: Clean up the backend resources
+      continue-on-error: true
       run: |
         aws iam list-attached-role-policies --role-name terraform-backend-role --query "AttachedPolicies[].PolicyArn" --output text | tr '\t' '\n' | xargs -I {} aws iam detach-role-policy --role-name terraform-backend-role --policy-arn {}
         aws iam delete-role --role-name terraform-backend-role
