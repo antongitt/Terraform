@@ -99,13 +99,19 @@ jobs:
     needs: terraform-cluster
     
     steps:
-    - name: Install kubectl
-      run: |
-        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /usr/share/keyrings/kubernetes-apt-keyring.gpg
-        echo 'deb [signed-by=/usr/share/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
-        sudo apt-get update 
-        sudo apt-get install -y kubectl
-        kubectl version --client
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE }}
+        aws-region:  ${{ vars.AWS_REGION }}
+
+#    - name: Install kubectl
+#      run: |
+#        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /usr/share/keyrings/kubernetes-apt-keyring.gpg
+#        echo 'deb [signed-by=/usr/share/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+#        sudo apt-get update 
+#        sudo apt-get install -y kubectl
+#        kubectl version --client
 
     - name: Update kubeconfig
       run: |
