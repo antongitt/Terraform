@@ -52,8 +52,8 @@ jobs:
       run: |
         cd aws/mario
         echo "$PWD"
-        BUCKET_NAME=$(grep -oP '(?<=bucket\s+=\s+")[^"]+' backend.tf)-$(grep -oP '(?<=region\s+=\s+")[^"]+' backend.tf)
-        DYNAMODB_TABLE=$(grep -oP '(?<=dynamodb_table\s+=\s+")[^"]+' backend.tf)
+        BUCKET_NAME=$(sed -nE 's/^\s*bucket\s*=\s*"([^"]+)".*$/\1/p' backend.tf)-$(sed -nE 's/^\s*region\s*=\s*"([^"]+)".*$/\1/p' backend.tf)
+        DYNAMODB_TABLE=$(sed -nE 's/^\s*dynamodb_table\s*=\s*"([^"]+)".*$/\1/p' backend.tf)
         echo "bucket_name=$BUCKET_NAME" >> $GITHUB_OUTPUT
         echo "dynamodb_table=$DYNAMODB_TABLE" >> $GITHUB_OUTPUT
           
