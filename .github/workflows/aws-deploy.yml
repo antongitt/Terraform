@@ -45,13 +45,6 @@ jobs:
           echo "Remote backend was not created! Exiting script..."
           exit 1
         fi
-    
-#    - name: Upload backend.tf as artifact
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: backend-artifact
-#        path: aws/mario/backend.tf
-#        overwrite: true
 
     - name: Save backend.tf to cache
       uses: actions/cache/save@v4
@@ -69,12 +62,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    
-#    - name: Download backend.tf
-#      uses: actions/download-artifact@v4
-#      with:
-#        name: backend-artifact
-#        path: aws/mario
 
     - name: Restore cached backend.tf
       uses: actions/cache/restore@v4
