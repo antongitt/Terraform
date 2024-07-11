@@ -78,11 +78,17 @@ jobs:
 
     - name: Restore cached backend.tf
       uses: actions/cache/restore@v4
+      id: restore-cache
       with:
         path: aws/mario
         key: backend.tf-key
+        restore-keys: |
+          backend.tf
+          backend
 
-
+    - name: Check cache hit
+      if: steps.restore-cache.outputs.cache-hit != 'true'
+      run: exit 1
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -128,6 +134,8 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
+        cd aws/mario
+        echo "$PWD"
         kubectl apply -f deployment.yaml
         kubectl apply -f service.yaml
         kubectl get all
