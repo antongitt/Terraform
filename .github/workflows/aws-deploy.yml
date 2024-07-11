@@ -120,4 +120,4 @@ jobs:
           exit 1
         fi
 
-        echo "::notice Open this URL in your favorite browser::$ELB_HOSTNAME"
+        echo "::notice title=Open this URL in your favorite browser::$ELB_HOSTNAME"
