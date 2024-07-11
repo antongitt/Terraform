@@ -35,8 +35,8 @@ jobs:
       run: |
         cd aws/mario
         echo "$PWD"
-#        terraform init
-#        terraform destroy --auto-approve
+        terraform init
+        terraform destroy --auto-approve
 
     - name: Extract values from backend.tf
       id: extract
