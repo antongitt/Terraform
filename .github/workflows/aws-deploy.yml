@@ -134,6 +134,19 @@ jobs:
         kubectl apply -f service.yaml
         kubectl get all
         kubectl describe service mario-service
-        echo "Waiting for the external hostname of the LoadBalancer to become available..."
-        # kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].hostname}' service/mario-service --timeout=300s
-        echo "Open this URL in your favorite browser: http://$(kubectl get service mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+
+    - name: Wait for the external hostname of the LoadBalancer to become available
+      run: |
+        ELB_HOSTNAME=""
+        SECONDS=0
+        until [ -n "$ELB_HOSTNAME" ] || [ $SECONDS -ge 300 ]; do
+          ELB_HOSTNAME=$(kubectl get service/mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null)
+          sleep 10
+        done
+
+        if [ -z "$ELB_HOSTNAME" ]; then
+          echo "Timeout waiting for the external hostname of the LoadBalancer."
+          exit 1
+        fi
+
+        echo "::notice Open this URL in your favorite browser::$ELB_HOSTNAME"

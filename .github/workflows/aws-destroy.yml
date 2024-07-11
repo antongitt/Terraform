@@ -17,21 +17,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Get latest workflow run ID
-      id: get_run_id
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        RUNID=$(gh api repos/$GITHUB_REPOSITORY/commits/${{ github.event.inputs.commit_sha }}/check-runs | jq -r '.check_runs[] | select(.name == "AWS EKS deploy workflow") | .html_url | capture("/runs/(?<number>[0-9]+)/job") | .number' | sed 's/"//g' | head -n 1)
-        echo "run_id=$RUNID" >> $GITHUB_OUTPUT
-    
-    - name: Download backend.tf from the deploy workflow run
-      uses: actions/download-artifact@v4
+    - name: Restore cached backend.tf
+      uses: actions/cache/restore@v4
+      id: restore-cache
       with:
-        name: backend-artifact
-        path: aws/mario
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        run-id: ${{ steps.get_run_id.outputs.run_id }}
+        path: aws/mario/backend.tf
+        key: backend.tf-key
+        fail-on-cache-miss: true
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4

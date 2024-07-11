@@ -31,15 +31,20 @@ echo "$PWD"
 terraform init
 terraform apply -auto-approve
 
-echo "Installing kubectl..."
-sudo yum-config-manager --add-repo https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-sudo yum install -y kubectl
-# Verify the installation
+echo "Installing the latest stable version of kubectl..."
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
 kubectl version --client
 
 echo
 echo "Updating configuration to communicate with the cluster..."
 aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name)
+
+# If you are trying to access the EKS cluster as a non-creator (e.g., cluster was created with GitHub Actions), you might face access issues. To resolve this, run the commands below::
+#aws eks update-cluster-config --name mario-cluster --access-config authenticationMode=API_AND_CONFIG_MAP
+#aws eks create-access-entry --cluster-name mario-cluster --principal-arn $(aws sts get-caller-identity --query 'Arn' --output text) --type STANDARD
+#aws eks associate-access-policy --cluster-name mario-cluster --principal-arn $(aws sts get-caller-identity --query 'Arn' --output text) --access-scope type=cluster --policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy
 
 # You can now use kubectl to manage your cluster and deploy Kubernetes configurations to it.
 kubectl apply -f deployment.yaml
