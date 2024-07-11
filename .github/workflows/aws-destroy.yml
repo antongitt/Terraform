@@ -49,19 +49,11 @@ jobs:
     - name: Clean up the backend resources
       continue-on-error: true
       run: |
-        aws iam list-attached-role-policies --role-name terraform-backend-role --query "AttachedPolicies[].PolicyArn" --output text | tr '\t' '\n' | xargs -I {} aws iam detach-role-policy --role-name terraform-backend-role --policy-arn {}  || true
+        aws iam list-attached-role-policies --role-name terraform-backend-role --query "AttachedPolicies[].PolicyArn" --output text | tr '\t' '\n' | xargs -I {} aws iam detach-role-policy --role-name terraform-backend-role --policy-arn {} || true
         aws iam delete-role --role-name terraform-backend-role || true
         aws dynamodb delete-table --table-name ${{ steps.extract.outputs.dynamodb_table }} || true
         aws s3 rm s3://${{ steps.extract.outputs.bucket_name }} --recursive || true
-        aws s3api delete-objects --bucket  ${{ steps.extract.outputs.bucket_name }} --delete "$(aws s3api list-object-versions --bucket ${{ steps.extract.outputs.bucket_name }} --output=json --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')" || true
-        aws s3 rb s3://${{ steps.extract.outputs.bucket_name }} --force || true
-
-    - name: Retry deleting the S3 bucket (immediate bucket deletion attempts might fail due to asynchronous object deletion)
-      run: |
-        retries=5
-        delay=10  # seconds between retries
-        until aws s3 rb s3://${{ steps.extract.outputs.bucket_name }} --force || [ $retries -eq 0 ]; do
-          echo "Retrying bucket deletion..."
-          retries=$((retries - 1))
-          sleep $delay
-        done
+        aws s3api delete-objects --bucket ${{ steps.extract.outputs.bucket_name }} --delete "$(aws s3api list-object-versions --bucket ${{ steps.extract.outputs.bucket_name }} --output=json --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')" || true
+        aws s3api delete-objects --bucket ${{ steps.extract.outputs.bucket_name }} --delete "$(aws s3api list-object-versions --bucket ${{ steps.extract.outputs.bucket_name }} --query='{Objects: DeleteMarkers[].{Key:Key,VersionId:VersionId}}')" || true
+        sleep 10
+        aws s3 rb s3://${{ steps.extract.outputs.bucket_name }} --force
