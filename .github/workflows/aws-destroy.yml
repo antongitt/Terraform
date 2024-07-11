@@ -58,9 +58,9 @@ jobs:
     - name: Clean up the backend resources
       continue-on-error: true
       run: |
-        aws iam list-attached-role-policies --role-name terraform-backend-role --query "AttachedPolicies[].PolicyArn" --output text | tr '\t' '\n' | xargs -I {} aws iam detach-role-policy --role-name terraform-backend-role --policy-arn {}
-        aws iam delete-role --role-name terraform-backend-role
-        aws dynamodb delete-table --table-name ${{ steps.extract.outputs.dynamodb_table }}
-        aws s3 rm s3://${{ steps.extract.outputs.bucket_name }} --recursive
-        aws s3api delete-objects --bucket  ${{ steps.extract.outputs.bucket_name }} --delete "$(aws s3api list-object-versions --bucket ${{ steps.extract.outputs.bucket_name }} --output=json --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')"
-        aws s3 rb s3://${{ steps.extract.outputs.bucket_name }} --force
+        aws iam list-attached-role-policies --role-name terraform-backend-role --query "AttachedPolicies[].PolicyArn" --output text | tr '\t' '\n' | xargs -I {} aws iam detach-role-policy --role-name terraform-backend-role --policy-arn {}  || true
+        aws iam delete-role --role-name terraform-backend-role || true
+        aws dynamodb delete-table --table-name ${{ steps.extract.outputs.dynamodb_table }} || true
+        aws s3 rm s3://${{ steps.extract.outputs.bucket_name }} --recursive || true
+        aws s3api delete-objects --bucket  ${{ steps.extract.outputs.bucket_name }} --delete "$(aws s3api list-object-versions --bucket ${{ steps.extract.outputs.bucket_name }} --output=json --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')" || true
+        aws s3 rb s3://${{ steps.extract.outputs.bucket_name }} --force || true
