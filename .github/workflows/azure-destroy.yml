@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   id-token: write
   contents: read
 
@@ -17,13 +18,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Restore cached backend.tf
-      uses: actions/cache/restore@v4
-      id: restore-cache
-      with:
-        path: azure/mario/backend.tf
-        key: azure-backend.tf-key
-        fail-on-cache-miss: true
+    # - name: Restore cached backend.tf
+    #   uses: actions/cache/restore@v4
+    #   id: restore-cache
+    #   with:
+    #     path: azure/mario/backend.tf
+    #     key: azure-backend.tf-key
+    #     fail-on-cache-miss: true
 
     - name: Azure login
       uses: azure/login@v2
@@ -32,20 +33,20 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Terraform destroy the cluster resources
-      run: |
-        cd azure/mario
-        echo "$PWD"
-        terraform init
-        terraform destroy --auto-approve
+    # - name: Terraform destroy the cluster resources
+    #   run: |
+    #     cd azure/mario
+    #     echo "$PWD"
+    #     terraform init
+    #     terraform destroy --auto-approve
 
-    - name: Extract values from backend.tf
-      id: extract
-      run: |
-        cd azure/mario
-        echo "$PWD"
-        echo "bucket_name=$(sed -nE 's/^\s*bucket\s*=\s*"([^"]+)".*$/\1/p' backend.tf)" >> $GITHUB_OUTPUT
-        echo "dynamodb_table=$(sed -nE 's/^\s*dynamodb_table\s*=\s*"([^"]+)".*$/\1/p' backend.tf)" >> $GITHUB_OUTPUT
+    # - name: Extract values from backend.tf
+    #   id: extract
+    #   run: |
+    #     cd azure/mario
+    #     echo "$PWD"
+    #     echo "bucket_name=$(sed -nE 's/^\s*bucket\s*=\s*"([^"]+)".*$/\1/p' backend.tf)" >> $GITHUB_OUTPUT
+    #     echo "dynamodb_table=$(sed -nE 's/^\s*dynamodb_table\s*=\s*"([^"]+)".*$/\1/p' backend.tf)" >> $GITHUB_OUTPUT
 
     - name: Clean up the backend resources
       uses: azure/cli@v2
@@ -53,3 +54,10 @@ jobs:
         azcliversion: latest
         inlineScript: |
           az group delete --name "mario-backend-rg" --yes
+
+    - name: Delete cache
+      run: |
+        gh cache list --key azure-backend.tf-key
+        gh cache delete azure-backend.tf-key
+      env:
+        GH_TOKEN: ${{ github.token }}

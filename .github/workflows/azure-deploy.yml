@@ -48,12 +48,6 @@ jobs:
           exit 1
         fi
 
-    - name: Update backend.tf to include use_oidc
-      run: |
-        cd azure/mario
-        sed -i '/key/a \ \ use_oidc = true' backend.tf
-        cat backend.tf
-
     - name: Save backend.tf to cache
       uses: actions/cache/save@v4
       with:
@@ -92,6 +86,11 @@ jobs:
         echo "$PWD"
         terraform init
         terraform apply -auto-approve
+      env:
+        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        ARM_USE_OIDC: true
 
 
   kubectl:
