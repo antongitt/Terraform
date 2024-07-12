@@ -22,7 +22,7 @@ jobs:
       id: restore-cache
       with:
         path: aws/mario/backend.tf
-        key: backend.tf-key
+        key: aws-backend.tf-key
         fail-on-cache-miss: true
 
     - name: Configure AWS Credentials

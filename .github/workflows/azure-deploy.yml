@@ -1,4 +1,4 @@
-name: 'AWS EKS deploy workflow'
+name: 'Azure AKS deploy workflow'
 
 on:
   workflow_dispatch:
@@ -11,26 +11,27 @@ jobs:
   terraform-backend:
     name: 'Create the remote backend for Terraform job'
     runs-on: ubuntu-latest
-    environment: aws
+    environment: azure
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: Azure login
+      uses: azure/login@v2
       with:
-        role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE }}
-        aws-region:  ${{ vars.AWS_REGION }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Copy variables file
       run: |
-        cd aws/mario
+        cd azure/mario
         cp -fr terraform.tfvars ../backend/terraform.tfvars
 
     - name: Create remote backend
       run: |
-        cd aws/backend
+        cd azure/backend
         terraform init
         terraform apply -auto-approve
         if [[ $(terraform output -raw bucket) == "" ]]; then
@@ -41,14 +42,14 @@ jobs:
     - name: Save backend.tf to cache
       uses: actions/cache/save@v4
       with:
-        path: aws/mario/backend.tf
-        key: aws-backend.tf-key
+        path: azure/mario/backend.tf
+        key: azure-backend.tf-key
 
 
   terraform-cluster:
     name: 'Create the cluster resources with Terraform job'
     runs-on: ubuntu-latest
-    environment: aws
+    environment: azure
     needs: terraform-backend
 
     steps:
@@ -59,19 +60,20 @@ jobs:
       uses: actions/cache/restore@v4
       id: restore-cache
       with:
-        path: aws/mario/backend.tf
-        key: aws-backend.tf-key
+        path: azure/mario/backend.tf
+        key: azure-backend.tf-key
         fail-on-cache-miss: true
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: Azure login
+      uses: azure/login@v2
       with:
-        role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE }}
-        aws-region:  ${{ vars.AWS_REGION }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Terraform apply to create the cluster resources
       run: |
-        cd aws/mario
+        cd azure/mario
         echo "$PWD"
         terraform init
         terraform apply -auto-approve
@@ -80,26 +82,30 @@ jobs:
   kubectl:
     name: 'Configure the cluster with kubectl job'
     runs-on: ubuntu-latest
-    environment: aws
+    environment: azure
     needs: terraform-cluster
     
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
+    - name: Azure login
+      uses: azure/login@v2
       with:
-        role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE }}
-        aws-region:  ${{ vars.AWS_REGION }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Update kubeconfig
-      run: |
-        aws eks --region ${{ vars.AWS_REGION }} update-kubeconfig --name ${{ vars.PROJECT_NAME }}-cluster
+    - name: Get access credentials for a managed Kubernetes cluster
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az aks get-credentials --resource-group $(terraform output -raw rg_name) --name $(terraform output -raw cluster_name) --overwrite-existing
 
     - name: Deploy to Kubernetes
       run: |
-        cd aws/mario
+        cd azure/mario
         echo "$PWD"
         kubectl apply -f deployment.yaml
         kubectl apply -f service.yaml
