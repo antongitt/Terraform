@@ -39,6 +39,21 @@ jobs:
           exit 1
         fi
 
+    - name: Update backend.tf to include use_oidc
+      run: |
+        cd azure/mario
+        sed -i '/key/a \ \ use_oidc = true' backend.tf
+        cat backend.tf
+
+    - name: Delete old cache if exists
+      run: |
+        gh extension install actions/gh-actions-cache
+        if gh actions-cache list --key azure-backend.tf-key > /dev/null 2>&1; then
+          gh actions-cache delete azure-backend.tf-key --confirm
+        else
+          echo "Cache azure-backend.tf-key not found or already deleted."
+        fi
+
     - name: Save backend.tf to cache
       uses: actions/cache/save@v4
       with:
