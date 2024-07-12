@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   id-token: write
-  contents: write
+  contents: read
 
 jobs:
   terraform-backend:
