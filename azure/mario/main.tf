@@ -13,7 +13,7 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "rg" {
   location = var.region
-  name     = "${var.project}-rg"
+  name     = "${var.project}-aks-rg"
 }
 
 resource "azurerm_kubernetes_cluster" "cl" {

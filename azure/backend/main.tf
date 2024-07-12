@@ -12,7 +12,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "terraform-rg"
+  name     = "${var.project}-backend-rg"
   location = var.region
 }
 
