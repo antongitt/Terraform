@@ -89,7 +89,7 @@ In this fun project/example, you will deploy an AKS cluster running a [dockerize
 You can create a runner VM and attach IAM role to it, or you can simply use Azure Cloud Shell:
 - Open the [Azure Portal](https://portal.azure.com/)
 - In the top-right corner, click on "Cloud Shell"
-- Make sure Bash is selected as the terminal shell
+- Make sure `Bash` is selected as the terminal shell
 - Clone the repo:
 ```bash
 git clone https://github.com/antongitt/Terraform.git
