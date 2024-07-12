@@ -34,7 +34,7 @@ jobs:
         cd azure/backend
         terraform init
         terraform apply -auto-approve
-        if [[ $(terraform output -raw bucket) == "" ]]; then
+        if [[ $(terraform output -raw container) == "" ]]; then
           echo "Remote backend was not created! Exiting script..."
           exit 1
         fi
