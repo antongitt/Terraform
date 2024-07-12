@@ -24,6 +24,15 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+    - name: Delete old cache if exists
+      run: |
+        gh cache list
+        gh cache list --key azure-backend.tf-key
+        gh cache delete azure-backend.tf-key
+      env:
+        GH_TOKEN: ${{ github.token }}
+
+
     - name: Copy variables file
       run: |
         cd azure/mario
@@ -44,17 +53,6 @@ jobs:
         cd azure/mario
         sed -i '/key/a \ \ use_oidc = true' backend.tf
         cat backend.tf
-
-    - name: Delete old cache if exists
-      run: |
-        gh extension install actions/gh-actions-cache
-        if gh actions-cache list --key azure-backend.tf-key > /dev/null 2>&1; then
-          gh actions-cache delete azure-backend.tf-key --confirm
-        else
-          echo "Cache azure-backend.tf-key not found or already deleted."
-        fi
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     - name: Save backend.tf to cache
       uses: actions/cache/save@v4
