@@ -119,12 +119,22 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Get access credentials for a managed Kubernetes cluster
-      uses: azure/cli@v2
+    # - name: Get access credentials for a managed Kubernetes cluster
+    #   uses: azure/cli@v2
+    #   with:
+    #     azcliversion: latest
+    #     inlineScript: |
+    #       az aks get-credentials --resource-group ${{ needs.terraform-cluster.outputs.rg_name }} --name ${{ needs.terraform-cluster.outputs.cluster_name }} --overwrite-existing
+
+    - name: Set AKS context
+      id: set-context
+      uses: azure/aks-set-context@v4
       with:
-        azcliversion: latest
-        inlineScript: |
-          az aks get-credentials --resource-group ${{ needs.terraform-cluster.outputs.rg_name }} --name ${{ needs.terraform-cluster.outputs.cluster_name }} --overwrite-existing
+        resource-group: '${{ needs.terraform-cluster.outputs.rg_name }}' 
+        cluster-name: '${{ needs.terraform-cluster.outputs.cluster_name }}'
+
+    - name: Verify Kubernetes context
+      run: kubectl config current-context
 
     - name: Deploy to Kubernetes
       run: |
