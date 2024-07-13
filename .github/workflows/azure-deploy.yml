@@ -27,8 +27,11 @@ jobs:
 
     - name: Delete old cache if exists
       run: |
-        gh cache list --key azure-backend.tf-key
-        gh cache delete azure-backend.tf-key
+        if [[ $(gh cache list --key azure-backend.tf-key) ]]; then
+          gh cache delete azure-backend.tf-key
+        else
+          echo "Cache azure-backend.tf-key not found or already deleted."
+        fi
       env:
         GH_TOKEN: ${{ github.token }}
 
