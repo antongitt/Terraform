@@ -83,16 +83,23 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Terraform apply to create the cluster resources
+      id: apply
       run: |
         cd azure/mario
         echo "$PWD"
         terraform init
         terraform apply -auto-approve
+        echo "cluster_name=$(terraform output -raw cluster_name)" >> $GITHUB_OUTPUT
+        echo "rg_name=$(terraform output -raw rg_name)" >> $GITHUB_OUTPUT
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         ARM_USE_OIDC: true
+    
+    outputs:
+      cluster_name: ${{ steps.apply.outputs.cluster_name }}
+      rg_name: ${{ steps.apply.outputs.rg_name }}
 
 
   kubectl:
@@ -117,7 +124,7 @@ jobs:
       with:
         azcliversion: latest
         inlineScript: |
-          az aks get-credentials --resource-group $(terraform output -raw rg_name) --name $(terraform output -raw cluster_name) --overwrite-existing
+          az aks get-credentials --resource-group ${{ needs.terraform-cluster.outputs.rg_name }} --name ${{ needs.terraform-cluster.outputs.cluster_name }} --overwrite-existing
 
     - name: Deploy to Kubernetes
       run: |
