@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   id-token: write
   contents: read
 
@@ -57,3 +58,13 @@ jobs:
         aws s3api delete-objects --bucket ${{ steps.extract.outputs.bucket_name }} --delete "$(aws s3api list-object-versions --bucket ${{ steps.extract.outputs.bucket_name }} --query='{Objects: DeleteMarkers[].{Key:Key,VersionId:VersionId}}')" || true
         sleep 10
         aws s3 rb s3://${{ steps.extract.outputs.bucket_name }} --force
+
+    - name: Delete cache if exists
+      run: |
+        if [[ $(gh cache list --key aws-backend.tf-key) ]]; then
+          gh cache delete aws-backend.tf-key
+        else
+          echo "Cache aws-backend.tf-key not found or already deleted."
+        fi
+      env:
+        GH_TOKEN: ${{ github.token }}

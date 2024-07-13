@@ -35,7 +35,6 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
 
-
     - name: Copy variables file
       run: |
         cd azure/mario

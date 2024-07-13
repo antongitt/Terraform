@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   id-token: write
   contents: read
 
@@ -22,6 +23,16 @@ jobs:
       with:
         role-to-assume: ${{ vars.AWS_GITHUB_ACTIONS_ROLE }}
         aws-region:  ${{ vars.AWS_REGION }}
+
+    - name: Delete old cache if exists
+      run: |
+        if [[ $(gh cache list --key aws-backend.tf-key) ]]; then
+          gh cache delete aws-backend.tf-key
+        else
+          echo "Cache aws-backend.tf-key not found or already deleted."
+        fi
+      env:
+        GH_TOKEN: ${{ github.token }}
 
     - name: Copy variables file
       run: |
