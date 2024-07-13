@@ -1,4 +1,4 @@
-name: 'Actions Caches delete all workflow'
+name: 'Caches delete workflow'
 
 on:
   workflow_dispatch:
