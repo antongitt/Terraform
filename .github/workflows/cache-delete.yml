@@ -1,0 +1,28 @@
+name: 'Actions Caches delete all workflow'
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  delete:
+    name: 'Delete all caches job'
+    runs-on: ubuntu-latest
+    environment: azure
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Delete caches if exist
+      run: |
+        if [[ $(gh cache list) ]]; then
+          gh cache delete --all
+        else
+          echo "Caches not found or already deleted."
+        fi
+      env:
+        GH_TOKEN: ${{ github.token }}
