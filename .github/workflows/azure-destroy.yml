@@ -38,12 +38,21 @@ jobs:
         cd azure/mario
         echo "$PWD"
         terraform init
-        terraform destroy --auto-approve
+        terraform destroy --auto-approve | tee destroy_output.txt
       env:
         ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         ARM_USE_OIDC: true
+
+    - name: Annotate Terraform Destroy
+      run: |
+        DESTROY_OUTPUT=$(cat destroy_output.txt)
+        TITLE=$(echo "$DESTROY_OUTPUT" | grep 'Destroy complete!')
+        CHANGES=$(echo "$DESTROY_OUTPUT" | grep 'Destruction complete after')
+        if [ -n "$TITLE" ] && [ -n "$CHANGES" ]; then
+          echo "::notice title=$TITLE::$CHANGES"
+        fi
 
     - name: Extract values from backend.tf
       id: extract
