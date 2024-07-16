@@ -38,4 +38,4 @@ echo
 echo "Waiting for the external IP of the LoadBalancer to become available..."
 kubectl wait --for=jsonpath='{.status.loadBalancer.ingress[0].ip}' service/mario-service --timeout=300s
 echo
-echo "Open this URL in your favorite browser: http://$(kubectl get service mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')"
+echo "Open this URL in your favorite browser: http://$(kubectl get service/mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')"

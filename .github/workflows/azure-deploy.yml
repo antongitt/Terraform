@@ -150,7 +150,7 @@ jobs:
         ELB_HOSTNAME=""
         SECONDS=0
         until [ -n "$ELB_HOSTNAME" ] || [ $SECONDS -ge 300 ]; do
-          ELB_HOSTNAME=$(kubectl get service/mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null)
+          ELB_HOSTNAME=$(kubectl get service/mario-service -o=jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null)
           sleep 10
         done
 
@@ -159,4 +159,4 @@ jobs:
           exit 1
         fi
 
-        echo "::notice title=Open this URL in your favorite browser::$ELB_HOSTNAME"
+        echo "::notice title=Open this URL in your favorite browser::http://$ELB_HOSTNAME"
