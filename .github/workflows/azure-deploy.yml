@@ -99,13 +99,13 @@ jobs:
 
     - name: Annotate Terraform Apply
       run: |
+        cd azure/mario
         APPLY_OUTPUT=$(cat apply_output.txt)
         TITLE=$(echo "$APPLY_OUTPUT" | grep 'Apply complete!')
         CHANGES=$(echo "$APPLY_OUTPUT" | grep 'Creation complete after')
         if [ -n "$TITLE" ] && [ -n "$CHANGES" ]; then
           echo "::notice title=$TITLE::$CHANGES"
         fi
-
 
     outputs:
       cluster_name: ${{ steps.apply.outputs.cluster_name }}

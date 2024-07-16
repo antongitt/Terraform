@@ -47,6 +47,7 @@ jobs:
 
     - name: Annotate Terraform Destroy
       run: |
+        cd azure/mario
         DESTROY_OUTPUT=$(cat destroy_output.txt)
         TITLE=$(echo "$DESTROY_OUTPUT" | grep 'Destroy complete!')
         CHANGES=$(echo "$DESTROY_OUTPUT" | grep 'Destruction complete after')
