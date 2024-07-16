@@ -48,9 +48,9 @@ jobs:
     - name: Annotate Terraform Destroy
       run: |
         cd azure/mario
-        DESTROY_OUTPUT=$(cat destroy_output.txt)
-        TITLE=$(echo "$DESTROY_OUTPUT" | grep 'Destroy complete!')
-        CHANGES=$(echo "$DESTROY_OUTPUT" | grep 'Destruction complete after')
+        OUTPUT=$(cat destroy_output.txt)
+        TITLE=$(echo "$OUTPUT" | grep 'complete!')
+        CHANGES=$(echo "$OUTPUT" | grep 'complete after' | tr '\n' '; ')
         if [ -n "$TITLE" ] && [ -n "$CHANGES" ]; then
           echo "::notice title=$TITLE::$CHANGES"
         fi

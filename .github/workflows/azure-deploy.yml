@@ -101,8 +101,8 @@ jobs:
       run: |
         cd azure/mario
         OUTPUT=$(cat apply_output.txt)
-        TITLE=$(echo "$OUTPUT" | grep 'Apply complete!')
-        CHANGES=$(echo "$OUTPUT" | grep 'Creation complete after' | tr '\n' '%0A')
+        TITLE=$(echo "$OUTPUT" | grep 'complete!')
+        CHANGES=$(echo "$OUTPUT" | grep 'complete after' | tr '\n' '; ')
         if [ -n "$TITLE" ] && [ -n "$CHANGES" ]; then
           echo "::notice title=$TITLE::$CHANGES"
         fi
