@@ -37,7 +37,17 @@ jobs:
         cd aws/mario
         echo "$PWD"
         terraform init
-        terraform destroy --auto-approve
+        terraform destroy --auto-approve | tee destroy_output.txt
+
+    - name: Annotate Terraform Destroy
+      run: |
+        cd aws/mario
+        OUTPUT=$(cat destroy_output.txt)
+        TITLE=$(echo "$OUTPUT" | grep 'complete!')
+        CHANGES=$(echo "$OUTPUT" | grep 'complete after' | tr '\n' '| ')
+        if [ -n "$TITLE" ] && [ -n "$CHANGES" ]; then
+          echo "::notice title=$TITLE::$CHANGES"
+        fi
 
     - name: Extract values from backend.tf
       id: extract

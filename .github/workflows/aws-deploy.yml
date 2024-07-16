@@ -85,7 +85,17 @@ jobs:
         cd aws/mario
         echo "$PWD"
         terraform init
-        terraform apply -auto-approve
+        terraform apply -auto-approve | tee apply_output.txt
+
+    - name: Annotate Terraform Apply
+      run: |
+        cd aws/mario
+        OUTPUT=$(cat apply_output.txt)
+        TITLE=$(echo "$OUTPUT" | grep 'complete!')
+        CHANGES=$(echo "$OUTPUT" | grep 'complete after' | tr '\n' '| ')
+        if [ -n "$TITLE" ] && [ -n "$CHANGES" ]; then
+          echo "::notice title=$TITLE::$CHANGES"
+        fi
 
 
   kubectl:

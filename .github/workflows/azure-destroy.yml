@@ -50,7 +50,7 @@ jobs:
         cd azure/mario
         OUTPUT=$(cat destroy_output.txt)
         TITLE=$(echo "$OUTPUT" | grep 'complete!')
-        CHANGES=$(echo "$OUTPUT" | grep 'complete after' | tr '\n' '; ')
+        CHANGES=$(echo "$OUTPUT" | grep 'complete after' | tr '\n' '| ')
         if [ -n "$TITLE" ] && [ -n "$CHANGES" ]; then
           echo "::notice title=$TITLE::$CHANGES"
         fi
