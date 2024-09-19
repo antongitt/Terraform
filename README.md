@@ -28,15 +28,6 @@ That's it! Cluster creation could take up to 10 minutes.
 
 Open URL from script output.
 
-Check the cluster events:
-```bash
-kubectl get events --sort-by=.metadata.creationTimestamp
-```
-
-That's it! Cluster creation could take up to 10 minutes.
-
-Open URL from the script output.
-
 > [!TIP]
 > In case of any issues, please check the cluster events. These events are retained for 1 hour by default:
 > ```bash
