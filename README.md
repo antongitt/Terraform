@@ -1,3 +1,7 @@
+Terraform is a cloud-agnostic infrastructure provisioning tool. You can use Terraform's collection of providers to provision and compose resources from multiple cloud providers using the same infrastructure-as-code workflow. This allows you to create multi-cloud architectures without needing to manage cloud-specific implementations and tools.
+
+In this fun project/example, you will provision Kubernetes clusters in Azure and AWS environments using their respective providers and managed Kubernetes services, deploy an image running a Super Mario game across the clusters, all using the same Terraform workflow.
+
 # aws/mario
 ![mario](https://github.com/antongitt/Terraform/assets/91033128/d59dcc9c-1f2d-45fe-9d18-574e5818cd23)
 
