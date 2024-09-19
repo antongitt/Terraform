@@ -146,3 +146,32 @@ terraform init
 terraform apply -auto-approve
 ```
 When you apply this Terraform configuration, it will create or modify the ```../${var.project}/backend.tf``` file. The file will contain the generated Terraform backend configuration based on the values of the specified resources and variables.
+
+# GitHub Actions
+
+GitHub Actions is an ideal platform for automating cloud deployments and infrastructure management tasks, such as provisioning and tearing down environments. By integrating workflows like you find in ```.github/workflows``` folder into your GitHub Actions, you can streamline your CI/CD process, ensuring that your infrastructure is consistently deployed and destroyed as needed.
+
+Additionally, integrating cache management workflow ```caches-delete.yml``` helps keep your environments clean and efficient.
+
+To start using the example workflows, fork or clone this repository, or just copy ```.github/workflows``` folder to your own repository.
+
+Then follow these steps:
+
+1. Create GitHub Environments
+   GitHub environments allow you to define different stages, such as production, staging, or development, with associated secrets and environment-specific configurations.
+3. Set Up Secrets and Variables for AWS and Azure
+For Azure, add 3 secrets to each environment:
+  - AZURE_CLIENT_ID
+  - AZURE_SECRET
+  - AZURE_TENANT_ID
+
+
+For AWS, add 2 secrets to each environment:
+  - AWS_ACCESS_KEY_ID
+  - AWS_SECRET_ACCESS_KEY
+
+Additionally, add 3 environment variables:
+  - AWS_REGION: The AWS region where your resources will be deployed (e.g., us-east-1).
+  - AZURE_SUBSCRIPTION_ID: Your Azure subscription ID.
+  - RESOURCE_GROUP: Name of your Azure resource group.
+
