@@ -13,7 +13,7 @@ In this fun project/example, you will deploy an EKS cluster running a [dockerize
 You can create a runner VM and attach IAM role to it, or you can simply use AWS CloudShell:
 - Open the AWS Management Console.
 - In the top-right corner, click on "CloudShell"
-- Clone the repo:
+- Clone this repository containing the example configuration:
 ```bash
 git clone https://github.com/antongitt/Terraform.git
 ```
@@ -85,7 +85,7 @@ You can create a runner VM and attach IAM role to it, or you can simply use Azur
 - Open the [Azure Portal](https://portal.azure.com/)
 - In the top-right corner, click on "Cloud Shell"
 - Make sure `Bash` is selected as the terminal shell
-- Clone the repo:
+- Clone this repository containing the example configuration:
 ```bash
 git clone https://github.com/antongitt/Terraform.git
 ```
